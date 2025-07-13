@@ -305,7 +305,7 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       <Input
                         id="title"
                         value={formData.title || ""}
-                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, title: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -313,7 +313,7 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       <Input
                         id="imageUrl"
                         value={formData.imageUrl || ""}
-                        onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, imageUrl: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -321,7 +321,7 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       <Input
                         id="linkUrl"
                         value={formData.linkUrl || ""}
-                        onChange={(e) => setFormData({ ...formData, linkUrl: e.target.value })}
+                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, linkUrl: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -330,14 +330,14 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                         id="order"
                         type="number"
                         value={formData.order || 0}
-                        onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
+                        onChange={(e: { target: { value: string; }; }) => setFormData({ ...formData, order: parseInt(e.target.value) })}
                       />
                     </div>
                     <div className="flex items-center space-x-2">
                       <Switch
                         id="isActive"
                         checked={formData.isActive}
-                        onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
+                        onCheckedChange={(checked: any) => setFormData({ ...formData, isActive: checked })}
                       />
                       <Label htmlFor="isActive">Active</Label>
                     </div>
@@ -351,7 +351,7 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       <Input
                         id="name"
                         value={formData.name || ""}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, name: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -359,7 +359,7 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       <Textarea
                         id="description"
                         value={formData.description || ""}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, description: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -367,7 +367,7 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       <Input
                         id="imageUrl"
                         value={formData.imageUrl || ""}
-                        onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, imageUrl: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -375,14 +375,14 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       <Input
                         id="slug"
                         value={formData.slug || ""}
-                        onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, slug: e.target.value })}
                       />
                     </div>
                     <div className="flex items-center space-x-2">
                       <Switch
                         id="isActive"
                         checked={formData.isActive}
-                        onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
+                        onCheckedChange={(checked: any) => setFormData({ ...formData, isActive: checked })}
                       />
                       <Label htmlFor="isActive">Active</Label>
                     </div>
@@ -396,7 +396,7 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       <Input
                         id="name"
                         value={formData.name || ""}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, name: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -404,7 +404,7 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       <Textarea
                         id="description"
                         value={formData.description || ""}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, description: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -412,7 +412,7 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       <Input
                         id="price"
                         value={formData.price || ""}
-                        onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, price: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -420,7 +420,7 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       <Input
                         id="imageUrl"
                         value={formData.imageUrl || ""}
-                        onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, imageUrl: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -428,14 +428,14 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       <Input
                         id="slug"
                         value={formData.slug || ""}
-                        onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, slug: e.target.value })}
                       />
                     </div>
                     <div className="flex items-center space-x-2">
                       <Switch
                         id="isFeatured"
                         checked={formData.isFeatured}
-                        onCheckedChange={(checked) => setFormData({ ...formData, isFeatured: checked })}
+                        onCheckedChange={(checked: any) => setFormData({ ...formData, isFeatured: checked })}
                       />
                       <Label htmlFor="isFeatured">Featured</Label>
                     </div>
@@ -443,7 +443,7 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       <Switch
                         id="isActive"
                         checked={formData.isActive}
-                        onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
+                        onCheckedChange={(checked: any) => setFormData({ ...formData, isActive: checked })}
                       />
                       <Label htmlFor="isActive">Active</Label>
                     </div>
