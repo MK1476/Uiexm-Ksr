@@ -213,7 +213,7 @@ export class MemStorage implements IStorage {
   async getCarouselImages(): Promise<CarouselImage[]> {
     return Array.from(this.carouselImages.values())
       .filter(img => img.isActive)
-      .sort((a, b) => a.order - b.order);
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   }
 
   async getCarouselImage(id: number): Promise<CarouselImage | undefined> {
@@ -222,7 +222,13 @@ export class MemStorage implements IStorage {
 
   async createCarouselImage(image: InsertCarouselImage): Promise<CarouselImage> {
     const id = this.currentCarouselId++;
-    const carouselImage: CarouselImage = { ...image, id };
+    const carouselImage: CarouselImage = { 
+      ...image, 
+      id,
+      order: image.order ?? null,
+      linkUrl: image.linkUrl ?? null,
+      isActive: image.isActive ?? true
+    };
     this.carouselImages.set(id, carouselImage);
     return carouselImage;
   }
@@ -255,7 +261,13 @@ export class MemStorage implements IStorage {
 
   async createCategory(category: InsertCategory): Promise<Category> {
     const id = this.currentCategoryId++;
-    const newCategory: Category = { ...category, id };
+    const newCategory: Category = { 
+      ...category, 
+      id,
+      description: category.description ?? null,
+      imageUrl: category.imageUrl ?? null,
+      isActive: category.isActive ?? true
+    };
     this.categories.set(id, newCategory);
     return newCategory;
   }
@@ -306,7 +318,17 @@ export class MemStorage implements IStorage {
 
   async createProduct(product: InsertProduct): Promise<Product> {
     const id = this.currentProductId++;
-    const newProduct: Product = { ...product, id };
+    const newProduct: Product = { 
+      ...product, 
+      id,
+      description: product.description ?? null,
+      imageUrl: product.imageUrl ?? null,
+      isActive: product.isActive ?? true,
+      price: product.price ?? null,
+      images: product.images ?? null,
+      categoryId: product.categoryId ?? null,
+      isFeatured: product.isFeatured ?? false
+    };
     this.products.set(id, newProduct);
     return newProduct;
   }
@@ -331,7 +353,11 @@ export class MemStorage implements IStorage {
 
   async createAdmin(admin: InsertAdmin): Promise<Admin> {
     const id = this.currentAdminId++;
-    const newAdmin: Admin = { ...admin, id };
+    const newAdmin: Admin = { 
+      ...admin, 
+      id,
+      isActive: admin.isActive ?? true
+    };
     this.admins.set(id, newAdmin);
     return newAdmin;
   }

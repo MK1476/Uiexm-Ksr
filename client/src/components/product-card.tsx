@@ -4,6 +4,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Link } from "wouter";
 import { generateProductEnquiryLink, openWhatsApp } from "@/lib/whatsapp";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { Product } from "@shared/schema";
 
 interface ProductCardProps {
@@ -12,6 +13,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const handleWhatsAppEnquiry = () => {
     const link = generateProductEnquiryLink(product.name, product.price || undefined);
@@ -50,26 +52,26 @@ const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   return (
-    <Card className="card-hover group">
+    <Card className="card-hover group premium-card premium-shadow">
       <Link href={`/product/${product.slug}`}>
         <div className="aspect-video overflow-hidden rounded-t-lg">
           <img
             src={product.imageUrl || "/placeholder-product.jpg"}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         </div>
       </Link>
       
       <CardContent className="p-6">
         <Link href={`/product/${product.slug}`}>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2 hover:text-primary transition-colors">
+          <h3 className="text-xl font-bold text-gray-800 mb-2 hover:text-primary transition-colors">
             {product.name}
           </h3>
         </Link>
         
         {product.description && (
-          <p className="text-gray-600 mb-4 line-clamp-2">
+          <p className="text-gray-600 mb-4 line-clamp-2 text-sm leading-relaxed">
             {product.description}
           </p>
         )}
@@ -82,10 +84,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </CardContent>
       
       <CardFooter className="p-6 pt-0">
-        <div className="flex flex-col sm:flex-row gap-3 w-full">
+        <div className="flex gap-3 w-full">
           <Button
             onClick={handleWhatsAppEnquiry}
-            className="flex-1 bg-green-500 hover:bg-green-600 text-white"
+            className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-300"
           >
             <MessageCircle className="h-4 w-4 mr-2" />
             Enquire Now
@@ -93,10 +95,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <Button
             onClick={handleShare}
             variant="outline"
-            className="sm:w-auto"
+            size={isMobile ? "icon" : "default"}
+            className="border-green-200 hover:bg-green-50 hover:border-green-300 transition-all duration-300"
           >
-            <Share2 className="h-4 w-4 mr-2" />
-            Share
+            <Share2 className="h-4 w-4" />
+            {!isMobile && <span className="ml-2">Share</span>}
           </Button>
         </div>
       </CardFooter>
