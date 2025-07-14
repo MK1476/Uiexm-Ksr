@@ -12,11 +12,10 @@ const FloatingWhatsApp = () => {
     <div className="fixed bottom-6 right-6 z-50">
       <Button
         onClick={handleClick}
-        className="bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110"
-        size="icon"
+        className="bg-green-500 hover:bg-green-600 text-white rounded-full px-6 py-4 shadow-lg transition-all duration-300 hover:scale-105 flex items-center space-x-2"
       >
-        <MessageCircle className="h-6 w-6" />
-        <span className="sr-only">Contact us on WhatsApp</span>
+        <MessageCircle className="h-5 w-5" />
+        <span className="font-medium">Contact Us!</span>
       </Button>
     </div>
   );

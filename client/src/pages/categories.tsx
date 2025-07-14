@@ -19,7 +19,13 @@ const Categories = () => {
   });
 
   const { data: products = [] } = useQuery<Product[]>({
-    queryKey: ["/api/products", slug ? `category=${slug}` : ""],
+    queryKey: ["/api/products", { category: slug }],
+    queryFn: async () => {
+      const url = slug ? `/api/products?category=${slug}` : "/api/products";
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Failed to fetch products');
+      return response.json();
+    },
     enabled: !slug || !!category,
   });
 
@@ -64,13 +70,25 @@ const Categories = () => {
         {/* Products in Category */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold text-gray-800 mb-8">
-              Products in {category.name}
-            </h2>
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-bold text-gray-800">
+                Products in {category.name}
+              </h2>
+              <Link href="/categories">
+                <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors">
+                  View All Categories
+                </button>
+              </Link>
+            </div>
             
             {products.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-gray-600">No products found in this category.</p>
+                <Link href="/categories">
+                  <button className="mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors">
+                    Browse Other Categories
+                  </button>
+                </Link>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

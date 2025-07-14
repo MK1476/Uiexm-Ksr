@@ -8,6 +8,18 @@ This is a full-stack web application for KSR Agros, an agricultural equipment co
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (July 2025)
+
+✓ **Image Upload System**: Implemented local image upload functionality with Base64 conversion
+✓ **Category-Product Relationships**: Fixed API queries to properly filter products by category
+✓ **Enhanced Admin Panel**: Added ImageUpload component and category selection for products
+✓ **Improved UI/UX**: 
+  - Modern gradient header with stylish navigation
+  - Enhanced floating WhatsApp button with "Contact Us!" text
+  - Better category page navigation with "View All Categories" button
+✓ **Performance Optimization**: Local image storage for faster loading times
+✓ **Product Organization**: Products now properly grouped by categories on main products page
+
 ## System Architecture
 
 ### Frontend Architecture
