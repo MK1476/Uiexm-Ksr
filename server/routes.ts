@@ -10,6 +10,21 @@ import {
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Image Upload
+  app.post("/api/upload", async (req, res) => {
+    try {
+      const { base64Data, filename } = req.body;
+      if (!base64Data || !filename) {
+        return res.status(400).json({ message: "base64Data and filename are required" });
+      }
+      
+      const imagePath = await storage.uploadImage(base64Data, filename);
+      res.json({ path: imagePath });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to upload image" });
+    }
+  });
+
   // Carousel Images
   app.get("/api/carousel", async (req, res) => {
     try {

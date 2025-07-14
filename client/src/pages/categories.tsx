@@ -19,8 +19,8 @@ const Categories = () => {
   });
 
   const { data: products = [] } = useQuery<Product[]>({
-    queryKey: ["/api/products"],
-    select: (data) => slug ? data.filter(p => p.categoryId === category?.id) : data,
+    queryKey: ["/api/products", slug ? `category=${slug}` : ""],
+    enabled: !slug || !!category,
   });
 
   if (slug && !category) {
