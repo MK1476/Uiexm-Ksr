@@ -24,6 +24,13 @@ Preferred communication style: Simple, everyday language.
   - Product names remain in English as requested, all other content translates
   - Covers all pages: home, categories, products, header, floating WhatsApp
   - Persistent language selection stored in localStorage
+✓ **Enhanced Image Upload System**:
+  - Automatic image compression and resizing for better performance
+  - Comprehensive error handling with user-friendly messages
+  - Increased server payload limit to 10MB
+  - Proper static file serving for uploaded images
+  - Better validation for file types and sizes
+  - Toast notifications for upload success/failure
 
 ## System Architecture
 

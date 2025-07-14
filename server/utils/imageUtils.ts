@@ -43,29 +43,38 @@ export class ImageManager {
   }
 
   public async saveImage(base64Data: string, filename: string): Promise<ImageUploadResult> {
-    // Remove data:image/xxx;base64, prefix if present
-    const base64Content = base64Data.replace(/^data:image\/[a-z]+;base64,/, '');
-    
-    // Convert base64 to buffer
-    const buffer = Buffer.from(base64Content, 'base64');
-    
-    // Generate unique filename
-    const timestamp = Date.now();
-    const extension = path.extname(filename) || '.jpg';
-    const uniqueFilename = `${timestamp}_${path.basename(filename, extension)}${extension}`;
-    
-    // Save to both directories
-    const uploadPath = path.join(this.uploadDir, uniqueFilename);
-    const publicPath = path.join(this.publicDir, uniqueFilename);
-    
-    await writeFile(uploadPath, buffer);
-    await writeFile(publicPath, buffer);
-    
-    return {
-      filename: uniqueFilename,
-      path: `/uploads/${uniqueFilename}`,
-      size: buffer.length
-    };
+    try {
+      // Remove data:image/xxx;base64, prefix if present
+      const base64Content = base64Data.replace(/^data:image\/[a-z]+;base64,/, '');
+      
+      // Convert base64 to buffer
+      const buffer = Buffer.from(base64Content, 'base64');
+      
+      // Generate unique filename
+      const timestamp = Date.now();
+      const extension = path.extname(filename) || '.jpg';
+      const safeName = path.basename(filename, extension).replace(/[^a-zA-Z0-9-_]/g, '_');
+      const uniqueFilename = `${timestamp}_${safeName}${extension}`;
+      
+      // Ensure directories exist
+      await this.ensureDirectories();
+      
+      // Save to both directories for compatibility
+      const uploadPath = path.join(this.uploadDir, uniqueFilename);
+      const publicPath = path.join(this.publicDir, uniqueFilename);
+      
+      await writeFile(uploadPath, buffer);
+      await writeFile(publicPath, buffer);
+      
+      return {
+        filename: uniqueFilename,
+        path: `/uploads/${uniqueFilename}`,
+        size: buffer.length
+      };
+    } catch (error) {
+      console.error('Error saving image:', error);
+      throw new Error('Failed to save image file');
+    }
   }
 
   public async optimizeImage(buffer: Buffer): Promise<Buffer> {

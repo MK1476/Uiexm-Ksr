@@ -14,14 +14,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/upload", async (req, res) => {
     try {
       const { base64Data, filename } = req.body;
+      
       if (!base64Data || !filename) {
-        return res.status(400).json({ message: "base64Data and filename are required" });
+        return res.status(400).json({ message: "Missing required fields: base64Data and filename" });
+      }
+
+      // Validate base64 data
+      if (!base64Data.startsWith('data:image/')) {
+        return res.status(400).json({ message: "Invalid image format. Must be a valid base64 image." });
+      }
+
+      // Validate filename
+      if (typeof filename !== 'string' || filename.length === 0) {
+        return res.status(400).json({ message: "Invalid filename provided" });
+      }
+
+      // Extract file extension
+      const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+      const fileExtension = filename.toLowerCase().substring(filename.lastIndexOf('.'));
+      
+      if (!allowedExtensions.includes(fileExtension)) {
+        return res.status(400).json({ message: "Unsupported file type. Please use JPG, PNG, WebP, or GIF." });
+      }
+
+      // Calculate base64 size (approximate file size)
+      const base64Size = base64Data.length * 0.75; // Base64 is ~33% larger than binary
+      const maxSize = 10 * 1024 * 1024; // 10MB limit
+      
+      if (base64Size > maxSize) {
+        return res.status(400).json({ message: "File too large. Maximum size is 10MB." });
       }
       
       const imagePath = await storage.uploadImage(base64Data, filename);
       res.json({ path: imagePath });
     } catch (error) {
-      res.status(500).json({ message: "Failed to upload image" });
+      console.error('Upload error:', error);
+      if (error instanceof Error) {
+        res.status(500).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Failed to upload image" });
+      }
     }
   });
 

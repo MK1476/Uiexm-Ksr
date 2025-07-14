@@ -20,6 +20,14 @@ export const translations = {
     backToCategories: "Back to Categories",
     backToProducts: "Back to Products",
     share: "Share",
+    success: "Success",
+    error: "Error",
+    uploadSuccess: "Image uploaded successfully!",
+    uploadFailed: "Upload Failed",
+    invalidFileType: "Invalid File Type",
+    fileTooLarge: "File Too Large",
+    noProductsAvailable: "No products available at the moment.",
+    viewAll: "View All",
     
     // Home Page
     heroTitle: "Premium Agricultural Equipment",
@@ -125,6 +133,14 @@ export const translations = {
     backToCategories: "వర్గాలకు తిరిగి",
     backToProducts: "ఉత్పాదనలకు తిరిగి",
     share: "పంచుకోండి",
+    success: "విజయవంతం",
+    error: "లోపం",
+    uploadSuccess: "చిత్రం విజయవంతంగా అప్లోడ్ అయ్యింది!",
+    uploadFailed: "అప్లోడ్ విఫలమైంది",
+    invalidFileType: "చెల్లని ఫైల్ రకం",
+    fileTooLarge: "ఫైల్ చాలా పెద్దది",
+    noProductsAvailable: "ప్రస్తుతం ఉత్పాదనలు అందుబాటులో లేవు.",
+    viewAll: "అన్నింటిని చూడండి",
     
     // Home Page
     heroTitle: "అగ్రస్థాయి వ్యవసాయ పరికరాలు",
