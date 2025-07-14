@@ -10,7 +10,7 @@ export const generateWhatsAppLink = (config: WhatsAppConfig): string => {
 };
 
 export const generateProductEnquiryLink = (productName: string, productPrice?: string): string => {
-  const phoneNumber = "+919876543210";
+  const phoneNumber = "+919704100544";
   const baseMessage = `Hello KSR Agros, I am interested in your ${productName}`;
   const priceMessage = productPrice ? ` (Price: ${productPrice})` : "";
   const message = `${baseMessage}${priceMessage}. Please provide more details.`;
@@ -22,7 +22,7 @@ export const generateProductEnquiryLink = (productName: string, productPrice?: s
 };
 
 export const generateContactEnquiryLink = (): string => {
-  const phoneNumber = "+919876543210";
+  const phoneNumber = "+919704100544";
   const message = "Hello KSR Agros, I would like to inquire about your products and services.";
   
   return generateWhatsAppLink({
