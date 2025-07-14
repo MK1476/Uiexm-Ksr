@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Tractor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -24,17 +24,13 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-gradient-to-r from-gray-800 via-gray-700 to-green-600 shadow-xl sticky top-0 z-50 backdrop-blur-md">
+    <header className="bg-gradient-to-r from-green-700 via-green-600 to-green-500 shadow-xl sticky top-0 z-50 backdrop-blur-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
-            <div className="bg-white/10 p-2 rounded-lg group-hover:bg-white/20 transition-all duration-300">
-              <img 
-                src="/logo.png" 
-                alt="KSR Agros Logo" 
-                className="h-12 w-12 object-contain"
-              />
+            <div className="p-2 bg-white/20 rounded-lg group-hover:bg-white/30 transition-all duration-300">
+              <Tractor className="h-10 w-10 text-white" />
             </div>
             <div className="flex flex-col">
               <span className="text-2xl font-bold text-white tracking-tight">KSR Agros</span>
@@ -67,15 +63,11 @@ const Header = () => {
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-gradient-to-b from-gray-800 to-green-700">
+            <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-gradient-to-b from-green-600 to-green-700">
               <div className="flex flex-col space-y-2 mt-8">
-                <div className="flex items-center space-x-3 mb-6 pb-6 border-b border-gray-600">
+                <div className="flex items-center space-x-3 mb-6 pb-6 border-b border-green-500">
                   <div className="p-2 bg-white/20 rounded-lg">
-                    <img 
-                      src="/logo.png" 
-                      alt="KSR Agros Logo" 
-                      className="h-10 w-10 object-contain"
-                    />
+                    <Tractor className="h-8 w-8 text-white" />
                   </div>
                   <div>
                     <span className="text-xl font-bold text-white">KSR Agros</span>
