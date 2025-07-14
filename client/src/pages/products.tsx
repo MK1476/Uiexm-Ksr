@@ -3,9 +3,12 @@ import ProductCard from "@/components/product-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
+import { useLanguage } from "@/contexts/language-context";
 import type { Product, Category } from "@shared/schema";
 
 const Products = () => {
+  const { t } = useLanguage();
+  
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
@@ -53,10 +56,10 @@ const Products = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              Our Products
+              {t("ourProducts")}
             </h1>
             <p className="text-lg text-gray-600">
-              Discover our complete range of premium agricultural equipment and machinery
+              {t("productsSubtitle")}
             </p>
           </div>
         </div>
@@ -67,7 +70,7 @@ const Products = () => {
         <div className="container mx-auto px-4">
           {products.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-600">No products available at the moment.</p>
+              <p className="text-gray-600">{t("noProductsAvailable")}</p>
             </div>
           ) : (
             <div className="space-y-16">
@@ -88,7 +91,7 @@ const Products = () => {
                       </div>
                       <Link href={`/categories/${category.slug}`}>
                         <Badge variant="outline" className="hover:bg-green-50 hover:text-green-700 transition-colors cursor-pointer">
-                          View All {category.name} →
+                          {t("viewAll")} {category.name} →
                         </Badge>
                       </Link>
                     </div>

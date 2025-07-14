@@ -13,6 +13,13 @@ export const translations = {
     contactUs: "Contact Us!",
     viewAllCategories: "View All Categories",
     browseOtherCategories: "Browse Other Categories",
+    viewProducts: "View Products",
+    viewAllProducts: "View All Products",
+    enquireNow: "Enquire Now",
+    moreDetails: "More Details",
+    backToCategories: "Back to Categories",
+    backToProducts: "Back to Products",
+    share: "Share",
     
     // Home Page
     heroTitle: "Premium Agricultural Equipment",
@@ -111,6 +118,13 @@ export const translations = {
     contactUs: "మమ్మల్ని సంప్రదించండి!",
     viewAllCategories: "అన్ని వర్గాలను చూడండి",
     browseOtherCategories: "ఇతర వర్గాలను చూడండి",
+    viewProducts: "ఉత్పాదనలను చూడండి",
+    viewAllProducts: "అన్ని ఉత్పాదనలను చూడండి",
+    enquireNow: "ఇప్పుడే విచారించండి",
+    moreDetails: "మరిన్ని వివరాలు",
+    backToCategories: "వర్గాలకు తిరిగి",
+    backToProducts: "ఉత్పాదనలకు తిరిగి",
+    share: "పంచుకోండి",
     
     // Home Page
     heroTitle: "అగ్రస్థాయి వ్యవసాయ పరికరాలు",

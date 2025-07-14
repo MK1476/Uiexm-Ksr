@@ -87,7 +87,7 @@ const Home = () => {
                       {category.description}
                     </p>
                     <div className="flex items-center text-primary hover:text-primary/80 font-medium">
-                      {t("viewAll")}
+                      {t("viewProducts")}
                       <ArrowRight className="h-4 w-4 ml-1" />
                     </div>
                   </CardContent>
@@ -103,10 +103,10 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              Featured Products
+              {t("featuredProducts")}
             </h2>
             <p className="text-lg text-gray-600">
-              Discover our most popular and highly-rated farming equipment
+              {t("productsSubtitle")}
             </p>
           </div>
           
@@ -119,7 +119,7 @@ const Home = () => {
           <div className="text-center mt-12">
             <Link href="/products">
               <Button size="lg" className="bg-primary hover:bg-primary/90">
-                View All Products
+                {t("viewAllProducts")}
               </Button>
             </Link>
           </div>

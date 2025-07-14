@@ -5,6 +5,7 @@ import { Link } from "wouter";
 import { generateProductEnquiryLink, openWhatsApp } from "@/lib/whatsapp";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useLanguage } from "@/contexts/language-context";
 import type { Product } from "@shared/schema";
 
 interface ProductCardProps {
@@ -14,6 +15,7 @@ interface ProductCardProps {
 const ProductCard = ({ product }: ProductCardProps) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const { t } = useLanguage();
 
   const handleWhatsAppEnquiry = () => {
     const link = generateProductEnquiryLink(product.name, product.price || undefined);
@@ -38,7 +40,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       try {
         await navigator.clipboard.writeText(shareData.url);
         toast({
-          title: "Link copied!",
+          title: t("success"),
           description: "Product link has been copied to clipboard",
         });
       } catch (error) {
@@ -90,7 +92,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-300"
           >
             <MessageCircle className="h-4 w-4 mr-2" />
-            Enquire Now
+            {t("enquireNow")}
           </Button>
           <Button
             onClick={handleShare}
@@ -99,7 +101,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             className="border-green-200 hover:bg-green-50 hover:border-green-300 transition-all duration-300"
           >
             <Share2 className="h-4 w-4" />
-            {!isMobile && <span className="ml-2">Share</span>}
+            {!isMobile && <span className="ml-2">{t("share")}</span>}
           </Button>
         </div>
       </CardFooter>
