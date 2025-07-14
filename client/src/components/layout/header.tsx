@@ -1,20 +1,26 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Tractor } from "lucide-react";
+import { Menu, X, Tractor, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useLanguage } from "@/contexts/language-context";
 
 const Header = () => {
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
 
   const navigation = [
-    { name: "Home", href: "/" },
-    { name: "Categories", href: "/categories" },
-    { name: "Products", href: "/products" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
+    { name: t("home"), href: "/" },
+    { name: t("categories"), href: "/categories" },
+    { name: t("products"), href: "/products" },
+    { name: t("about"), href: "/about" },
+    { name: t("contact"), href: "/contact" },
   ];
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'te' : 'en');
+  };
 
   const isActive = (href: string) => {
     if (href === "/") {
@@ -39,21 +45,34 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-1">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                  isActive(item.href)
-                    ? "bg-white/20 text-white shadow-md"
-                    : "text-green-100 hover:bg-white/10 hover:text-white"
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
+          <div className="hidden md:flex items-center space-x-1">
+            <nav className="flex space-x-1">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                    isActive(item.href)
+                      ? "bg-white/20 text-white shadow-md"
+                      : "text-green-100 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+            
+            {/* Language Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleLanguage}
+              className="ml-4 text-green-100 hover:bg-white/10 hover:text-white"
+            >
+              <Languages className="h-4 w-4 mr-2" />
+              {language === 'en' ? 'తెలుగు' : 'English'}
+            </Button>
+          </div>
 
           {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -88,6 +107,16 @@ const Header = () => {
                     {item.name}
                   </Link>
                 ))}
+                
+                {/* Mobile Language Toggle */}
+                <Button
+                  variant="ghost"
+                  onClick={toggleLanguage}
+                  className="text-green-100 hover:bg-white/10 hover:text-white justify-start p-3 rounded-lg"
+                >
+                  <Languages className="h-5 w-5 mr-3" />
+                  {language === 'en' ? 'తెలుగు' : 'English'}
+                </Button>
               </div>
             </SheetContent>
           </Sheet>
