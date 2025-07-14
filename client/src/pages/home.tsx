@@ -5,9 +5,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import HeroCarousel from "@/components/hero-carousel";
 import ProductCard from "@/components/product-card";
+import { useLanguage } from "@/contexts/language-context";
 import type { Category, Product } from "@shared/schema";
 
 const Home = () => {
+  const { t } = useLanguage();
+  
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
   });
@@ -27,29 +30,26 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-              Welcome to KSR Agros
+              {t("heroTitle")}
             </h2>
             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              At KSR Agros, we are dedicated to empowering farmers and agricultural professionals with premium quality farming machinery and equipment. 
-              With years of experience in the agricultural industry, we provide reliable, durable, and innovative solutions that help increase productivity 
-              and efficiency in farming operations. From tractors and harvesters to specialized tools, we offer a comprehensive range of products 
-              designed to meet the diverse needs of modern agriculture.
+              {t("heroSubtitle")}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
               <div className="text-center">
                 <Award className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">Quality Assured</h3>
-                <p className="text-gray-600">Premium quality machinery from trusted manufacturers</p>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">{t("qualityEquipment")}</h3>
+                <p className="text-gray-600">{t("qualityEquipmentDesc")}</p>
               </div>
               <div className="text-center">
                 <Truck className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">Fast Delivery</h3>
-                <p className="text-gray-600">Quick and reliable delivery across all regions</p>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">{t("expertSupport")}</h3>
+                <p className="text-gray-600">{t("expertSupportDesc")}</p>
               </div>
               <div className="text-center">
                 <Headphones className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">24/7 Support</h3>
-                <p className="text-gray-600">Round-the-clock customer support and service</p>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">{t("affordablePricing")}</h3>
+                <p className="text-gray-600">{t("affordablePricingDesc")}</p>
               </div>
             </div>
           </div>
@@ -61,10 +61,10 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              Our Product Categories
+              {t("productCategories")}
             </h2>
             <p className="text-lg text-gray-600">
-              Explore our comprehensive range of agricultural equipment
+              {t("categoriesSubtitle")}
             </p>
           </div>
           
@@ -87,7 +87,7 @@ const Home = () => {
                       {category.description}
                     </p>
                     <div className="flex items-center text-primary hover:text-primary/80 font-medium">
-                      View Products
+                      {t("viewProducts")}
                       <ArrowRight className="h-4 w-4 ml-1" />
                     </div>
                   </CardContent>
@@ -103,10 +103,10 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              Featured Products
+              {t("featuredProducts")}
             </h2>
             <p className="text-lg text-gray-600">
-              Discover our most popular and highly-rated farming equipment
+              {t("productsSubtitle")}
             </p>
           </div>
           
@@ -119,7 +119,7 @@ const Home = () => {
           <div className="text-center mt-12">
             <Link href="/products">
               <Button size="lg" className="bg-primary hover:bg-primary/90">
-                View All Products
+                {t("viewAllProducts")}
               </Button>
             </Link>
           </div>

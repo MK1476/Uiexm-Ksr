@@ -13,6 +13,7 @@ import { Plus, Edit2, Trash2, LogOut, Save } from "lucide-react";
 import { logout } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { ImageUpload } from "@/components/image-upload";
 import type { CarouselImage, Category, Product } from "@shared/schema";
 
 interface AdminDashboardProps {
@@ -309,11 +310,10 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="imageUrl">Image URL</Label>
-                      <Input
-                        id="imageUrl"
-                        value={formData.imageUrl || ""}
-                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, imageUrl: e.target.value })}
+                      <Label>Image Upload</Label>
+                      <ImageUpload
+                        currentImage={formData.imageUrl}
+                        onImageUpload={(imageUrl) => setFormData({ ...formData, imageUrl })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -363,11 +363,10 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="imageUrl">Image URL</Label>
-                      <Input
-                        id="imageUrl"
-                        value={formData.imageUrl || ""}
-                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, imageUrl: e.target.value })}
+                      <Label>Image Upload</Label>
+                      <ImageUpload
+                        currentImage={formData.imageUrl}
+                        onImageUpload={(imageUrl) => setFormData({ ...formData, imageUrl })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -416,12 +415,27 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="imageUrl">Image URL</Label>
-                      <Input
-                        id="imageUrl"
-                        value={formData.imageUrl || ""}
-                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, imageUrl: e.target.value })}
+                      <Label>Image Upload</Label>
+                      <ImageUpload
+                        currentImage={formData.imageUrl}
+                        onImageUpload={(imageUrl) => setFormData({ ...formData, imageUrl })}
                       />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="categoryId">Category</Label>
+                      <select
+                        id="categoryId"
+                        value={formData.categoryId || ""}
+                        onChange={(e) => setFormData({ ...formData, categoryId: parseInt(e.target.value) || null })}
+                        className="w-full p-2 border rounded-md"
+                      >
+                        <option value="">Select a category</option>
+                        {categories.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="slug">Slug</Label>

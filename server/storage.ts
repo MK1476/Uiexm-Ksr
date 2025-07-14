@@ -12,8 +12,12 @@ import {
   type Admin,
   type InsertAdmin
 } from "@shared/schema";
+import { imageManager } from "./utils/imageUtils";
 
 export interface IStorage {
+  // Image Upload
+  uploadImage(base64Data: string, filename: string): Promise<string>;
+
   // Carousel Images
   getCarouselImages(): Promise<CarouselImage[]>;
   getCarouselImage(id: number): Promise<CarouselImage | undefined>;
@@ -207,6 +211,12 @@ export class MemStorage implements IStorage {
       isActive: true,
       slug: "heavy-duty-cultivator-hd-400",
     });
+  }
+
+  // Image Upload
+  async uploadImage(base64Data: string, filename: string): Promise<string> {
+    const result = await imageManager.saveImage(base64Data, filename);
+    return result.path;
   }
 
   // Carousel Images

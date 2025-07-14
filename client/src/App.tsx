@@ -14,6 +14,7 @@ import Admin from "@/pages/admin";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import FloatingWhatsApp from "@/components/floating-whatsapp";
+import { LanguageProvider } from "@/contexts/language-context";
 
 function Router() {
   return (
@@ -34,17 +35,19 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <div className="min-h-screen flex flex-col bg-gray-50">
-          <Header />
-          <main className="flex-grow">
-            <Router />
-          </main>
-          <Footer />
-          <FloatingWhatsApp />
-          <Toaster />
-        </div>
-      </TooltipProvider>
+      <LanguageProvider>
+        <TooltipProvider>
+          <div className="min-h-screen flex flex-col bg-gray-50">
+            <Header />
+            <main className="flex-grow">
+              <Router />
+            </main>
+            <Footer />
+            <FloatingWhatsApp />
+            <Toaster />
+          </div>
+        </TooltipProvider>
+      </LanguageProvider>
     </QueryClientProvider>
   );
 }

@@ -8,6 +8,23 @@ This is a full-stack web application for KSR Agros, an agricultural equipment co
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (July 2025)
+
+✓ **Image Upload System**: Implemented local image upload functionality with Base64 conversion
+✓ **Category-Product Relationships**: Fixed API queries to properly filter products by category
+✓ **Enhanced Admin Panel**: Added ImageUpload component and category selection for products
+✓ **Improved UI/UX**: 
+  - Modern gradient header with stylish navigation
+  - Enhanced floating WhatsApp button with "Contact Us!" text
+  - Better category page navigation with "View All Categories" button
+✓ **Performance Optimization**: Local image storage for faster loading times
+✓ **Product Organization**: Products now properly grouped by categories on main products page
+✓ **Telugu Translation System**: 
+  - Complete bilingual support (English/Telugu) with toggle button in header
+  - Product names remain in English as requested, all other content translates
+  - Covers all pages: home, categories, products, header, floating WhatsApp
+  - Persistent language selection stored in localStorage
+
 ## System Architecture
 
 ### Frontend Architecture
@@ -46,13 +63,20 @@ Preferred communication style: Simple, everyday language.
 - **Authentication**: Admin login system at `/api/auth/login`
 
 ### Frontend Pages
-- **Home**: Hero carousel, featured products, company info
-- **Categories**: Category listing and category-specific product views
-- **Products**: Complete product catalog
+- **Home**: Hero carousel, featured products, company info (bilingual)
+- **Categories**: Category listing and category-specific product views (bilingual)
+- **Products**: Complete product catalog (bilingual)
 - **Product Detail**: Individual product pages with related products
 - **About**: Company information and story
 - **Contact**: Contact form and company details
 - **Admin**: Protected admin panel for content management
+
+### Internationalization
+- **Language Context**: React context for language state management
+- **Translation System**: Comprehensive English/Telugu translation support
+- **UI Elements**: Language toggle button in header (desktop & mobile)
+- **Data Persistence**: Language preference stored in localStorage
+- **Selective Translation**: Product names remain in English, all other content translates
 
 ### Authentication System
 - **Client-side**: Local storage-based admin session management
