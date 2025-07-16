@@ -330,6 +330,12 @@ export class MemStorage implements IStorage {
   }
 
   async createProduct(product: InsertProduct): Promise<Product> {
+    // Check for duplicate slug
+    const existingProduct = Array.from(this.products.values()).find(p => p.slug === product.slug);
+    if (existingProduct) {
+      throw new Error(`Product with slug "${product.slug}" already exists`);
+    }
+
     const id = this.currentProductId++;
     const newProduct: Product = { 
       ...product, 
@@ -352,6 +358,14 @@ export class MemStorage implements IStorage {
   async updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined> {
     const existing = this.products.get(id);
     if (!existing) return undefined;
+    
+    // Check for duplicate slug if slug is being updated
+    if (product.slug && product.slug !== existing.slug) {
+      const existingProduct = Array.from(this.products.values()).find(p => p.slug === product.slug && p.id !== id);
+      if (existingProduct) {
+        throw new Error(`Product with slug "${product.slug}" already exists`);
+      }
+    }
     
     const updated = { ...existing, ...product };
     this.products.set(id, updated);

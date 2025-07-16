@@ -21,6 +21,8 @@ import { z } from "zod";
 const productFormSchema = insertProductSchema.extend({
   slug: z.string().min(1, "Slug is required").regex(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens"),
   categoryId: z.coerce.number().min(1, "Category is required"),
+}).omit({
+  images: true, // Remove images array validation since we're not using it
 });
 
 interface ProductFormProps {
@@ -46,7 +48,7 @@ export function ProductForm({ product, categories, onSave, onCancel }: ProductFo
       description: product?.description || "",
       price: product?.price || "",
       imageUrl: product?.imageUrl || "",
-      categoryId: product?.categoryId || categories[0]?.id || 1,
+      categoryId: product?.categoryId || (categories[0]?.id || 1),
       isFeatured: product?.isFeatured || false,
       isActive: product?.isActive ?? true,
       slug: product?.slug || "",
@@ -61,9 +63,22 @@ export function ProductForm({ product, categories, onSave, onCancel }: ProductFo
       const payload = { 
         ...data, 
         imageUrl, 
-        features: features.length > 0 ? features : undefined,
-        specifications: specifications.length > 0 ? specifications : undefined,
+        features: features.length > 0 ? features : [],
+        specifications: specifications.length > 0 ? specifications : [],
+        images: [], // Ensure images array is included as empty array
       };
+      
+      // Remove empty or undefined values to avoid validation issues
+      Object.keys(payload).forEach(key => {
+        if (payload[key] === undefined || payload[key] === '') {
+          if (key === 'description' || key === 'price' || key === 'youtubeUrl') {
+            payload[key] = ''; // Keep empty strings for optional text fields
+          } else if (key === 'features' || key === 'specifications' || key === 'images') {
+            payload[key] = []; // Keep empty arrays for array fields
+          }
+        }
+      });
+      
       if (product?.id) {
         return apiRequest("PUT", `/api/products/${product.id}`, payload);
       } else {
@@ -80,9 +95,17 @@ export function ProductForm({ product, categories, onSave, onCancel }: ProductFo
     },
     onError: (error: any) => {
       console.error("Save error:", error);
+      let errorMessage = "Failed to save product";
+      
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+      
       toast({
         title: "Error",
-        description: error.message || "Failed to save product",
+        description: errorMessage,
         variant: "destructive",
       });
     },
@@ -92,16 +115,19 @@ export function ProductForm({ product, categories, onSave, onCancel }: ProductFo
     saveMutation.mutate(data);
   };
 
-  // Auto-generate slug from name
+  // Auto-generate unique slug from name
   const handleNameChange = (name: string) => {
     form.setValue("name", name);
     if (!product?.id) { // Only auto-generate for new products
-      const slug = name.toLowerCase()
+      const baseSlug = name.toLowerCase()
         .replace(/[^a-z0-9\s-]/g, '')
         .replace(/\s+/g, '-')
         .replace(/-+/g, '-')
-        .trim('-');
-      form.setValue("slug", slug);
+        .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+      
+      // Add timestamp to ensure uniqueness
+      const uniqueSlug = baseSlug ? `${baseSlug}-${Date.now()}` : `product-${Date.now()}`;
+      form.setValue("slug", uniqueSlug);
     }
   };
 
