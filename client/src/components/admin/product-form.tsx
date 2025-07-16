@@ -79,39 +79,62 @@ export function ProductForm({ product, categories, onSave, onCancel }: ProductFo
         }
       });
       
+      console.log("Submitting payload:", payload);
+      
       if (product?.id) {
         return apiRequest("PUT", `/api/products/${product.id}`, payload);
       } else {
         return apiRequest("POST", "/api/products", payload);
       }
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
+      console.log("Product saved successfully:", response);
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
         title: "Success",
         description: `Product ${product?.id ? "updated" : "created"} successfully`,
       });
-      onSave();
+      // Use setTimeout to ensure the success callback completes before navigation
+      setTimeout(() => {
+        onSave();
+      }, 100);
     },
     onError: (error: any) => {
       console.error("Save error:", error);
-      let errorMessage = "Failed to save product";
       
-      if (error.message) {
-        errorMessage = error.message;
-      } else if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
+      // Only show error if it's not a duplicate submission issue
+      if (error?.response?.status === 409) {
+        toast({
+          title: "Error",
+          description: "A product with this slug already exists. Please try a different name.",
+          variant: "destructive",
+        });
+      } else if (error?.response?.status !== 200) {
+        // Only show error for non-success responses
+        let errorMessage = "Failed to save product";
+        
+        if (error.message) {
+          errorMessage = error.message;
+        } else if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        }
+        
+        toast({
+          title: "Error",
+          description: errorMessage,
+          variant: "destructive",
+        });
       }
-      
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
     },
   });
 
   const onSubmit = (data: z.infer<typeof productFormSchema>) => {
+    // Prevent multiple submissions
+    if (saveMutation.isPending) {
+      return;
+    }
+    
+    console.log("Form submitted with data:", data);
     saveMutation.mutate(data);
   };
 
