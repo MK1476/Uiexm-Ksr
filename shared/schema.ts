@@ -31,6 +31,9 @@ export const products = pgTable("products", {
   isFeatured: boolean("is_featured").default(false),
   isActive: boolean("is_active").default(true),
   slug: text("slug").notNull().unique(),
+  youtubeUrl: text("youtube_url"),
+  features: text("features").array(),
+  specifications: text("specifications").array(),
 });
 
 export const admins = pgTable("admins", {

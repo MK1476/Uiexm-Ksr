@@ -1,6 +1,7 @@
 import { MessageCircle, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { generateProductEnquiryLink, openWhatsApp } from "@/lib/whatsapp";
 import { useToast } from "@/hooks/use-toast";
@@ -56,12 +57,19 @@ const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <Card className="card-hover group premium-card premium-shadow">
       <Link href={`/product/${product.slug}`}>
-        <div className="aspect-video overflow-hidden rounded-t-lg">
+        <div className="aspect-[4/3] overflow-hidden rounded-t-lg relative">
           <img
             src={product.imageUrl || "/placeholder-product.jpg"}
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
+          {product.isActive === false && (
+            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+              <Badge variant="destructive" className="text-white font-semibold">
+                {t('unavailable')}
+              </Badge>
+            </div>
+          )}
         </div>
       </Link>
       
@@ -71,6 +79,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
             {product.name}
           </h3>
         </Link>
+        
+        <div className="flex items-center gap-2 mb-2">
+          <Badge variant={product.isActive !== false ? "secondary" : "destructive"}>
+            {product.isActive !== false ? t('available') : t('unavailable')}
+          </Badge>
+          {product.isFeatured && (
+            <Badge variant="default">{t('featured')}</Badge>
+          )}
+        </div>
         
         {product.description && (
           <p className="text-gray-600 mb-4 line-clamp-2 text-sm leading-relaxed">

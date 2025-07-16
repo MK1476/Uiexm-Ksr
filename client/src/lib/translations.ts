@@ -50,12 +50,32 @@ export const translations = {
     ourProducts: "Our Products",
     productsSubtitle: "Discover our complete range of premium agricultural equipment and machinery",
     otherProducts: "Other Products",
-    noProductsAvailable: "No products available at the moment.",
     
     // Product Details
     relatedProducts: "Related Products",
     specifications: "Specifications",
     features: "Features",
+    productVideo: "Product Video",
+    available: "Available",
+    unavailable: "Unavailable",
+    featured: "Featured",
+    
+    // Search
+    searchProducts: "Search products...",
+    searchByName: "Search by product name or category...",
+    
+    // Admin
+    adminName: "Name",
+    adminDescription: "Description",
+    adminPrice: "Price",
+    adminCategory: "Category",
+    adminSelectCategory: "Select a category",
+    adminYoutubeVideo: "YouTube Video",
+    adminImage: "Image",
+    adminSave: "Save",
+    adminCancel: "Cancel",
+    adminEdit: "Edit",
+    adminAddNew: "Add New",
     
     // About
     aboutUs: "About Us",
@@ -98,12 +118,13 @@ export const translations = {
     slug: "Slug",
     
     // Messages
-    success: "Success",
     loading: "Loading...",
     uploading: "Uploading...",
     changeImage: "Change Image",
     uploadImage: "Upload Image",
     selectCategory: "Select a category",
+    addFeature: "Add Feature",
+    removeFeature: "Remove Feature",
     
     // WhatsApp
     whatsappMessage: "Hello! I'm interested in learning more about your agricultural equipment.",
@@ -138,7 +159,6 @@ export const translations = {
     invalidFileType: "చెల్లని ఫైల్ రకం",
     fileTooLarge: "ఫైల్ చాలా పెద్దది",
     noProductsAvailable: "ప్రస్తుతం ఉత్పాదనలు అందుబాటులో లేవు.",
-    viewAll: "అన్నింటిని చూడండి",
     
     // Home Page
     heroTitle: "అగ్రస్థాయి వ్యవసాయ పరికరాలు",
@@ -162,7 +182,6 @@ export const translations = {
     ourProducts: "మా ఉత్పాదనలు",
     productsSubtitle: "మా పూర్తి శ్రేణి అగ్రస్థాయి వ్యవసాయ పరికరాలు మరియు యంత్రాలను కనుగొనండి",
     otherProducts: "ఇతర ఉత్పాదనలు",
-    noProductsAvailable: "ప్రస్తుతం ఉత్పాదనలు అందుబాటులో లేవు.",
     
     // Product Details
     relatedProducts: "సంబంధిత ఉత్పాదనలు",
@@ -210,13 +229,18 @@ export const translations = {
     slug: "స్లగ్",
     
     // Messages
-    success: "విజయం",
-    error: "లోపం",
     loading: "లోడ్ అవుతోంది...",
     uploading: "అప్‌లోడ్ అవుతోంది...",
     changeImage: "చిత్రాన్ని మార్చండి",
     uploadImage: "చిత్రాన్ని అప్‌లోడ్ చేయండి",
     selectCategory: "వర్గాన్ని ఎంచుకోండి",
+    searchProducts: "ఉత్పాదనలను వెతకండి...",
+    searchByName: "ఉత్పాదనం లేదా వర్గం పేరుతో వెతకండి",
+    available: "అందుబాటులో ఉంది",
+    unavailable: "అందుబాటులో లేదు",
+    youtubeVideo: "ఉత్పాదన వీడియో",
+    addFeature: "లక్షణం జోడించండి",
+    removeFeature: "లక్షణం తొలగించండి",
     
     // WhatsApp
     whatsappMessage: "హలో! మీ వ్యవసాయ పరికరాల గురించి మరింత తెలుసుకోవాలని అనుకుంటున్నాను.",

@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Award, Truck, Headphones, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { SearchBar } from "@/components/search-bar";
 import { Link } from "wouter";
 import HeroCarousel from "@/components/hero-carousel";
 import ProductCard from "@/components/product-card";
@@ -10,14 +12,30 @@ import type { Category, Product } from "@shared/schema";
 
 const Home = () => {
   const { t } = useLanguage();
+  const [searchQuery, setSearchQuery] = useState('');
   
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
   });
 
-  const { data: featuredProducts = [] } = useQuery<Product[]>({
+  const { data: allProducts = [] } = useQuery<Product[]>({
     queryKey: ["/api/products"],
-    select: (data) => data.filter(product => product.isFeatured),
+  });
+
+  const featuredProducts = allProducts.filter(product => product.isFeatured && product.isActive !== false);
+
+  // Filter products based on search query
+  const filteredProducts = allProducts.filter(product => {
+    if (!searchQuery) return false;
+    
+    const category = categories.find(cat => cat.id === product.categoryId);
+    const searchLower = searchQuery.toLowerCase();
+    
+    return (product.isActive !== false) && (
+      product.name.toLowerCase().includes(searchLower) ||
+      product.description?.toLowerCase().includes(searchLower) ||
+      category?.name.toLowerCase().includes(searchLower)
+    );
   });
 
   return (
@@ -35,6 +53,12 @@ const Home = () => {
             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
               {t("heroSubtitle")}
             </p>
+            <div className="max-w-md mx-auto mb-8">
+              <SearchBar 
+                onSearch={setSearchQuery}
+                placeholder={t('searchByName')}
+              />
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
               <div className="text-center">
                 <Award className="h-12 w-12 text-primary mx-auto mb-4" />
@@ -97,6 +121,44 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Search Results */}
+      {searchQuery && (
+        <section className="py-16 bg-blue-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+                Search Results for "{searchQuery}"
+              </h2>
+              <p className="text-gray-600">
+                {filteredProducts.length} products found
+              </p>
+            </div>
+            
+            {filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredProducts.slice(0, 6).map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-600">{t("noProductsFound")}</p>
+              </div>
+            )}
+            
+            {filteredProducts.length > 6 && (
+              <div className="text-center mt-12">
+                <Link href="/products">
+                  <Button size="lg" className="bg-primary hover:bg-primary/90">
+                    View All Results
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Featured Products */}
       <section className="py-16 bg-white">

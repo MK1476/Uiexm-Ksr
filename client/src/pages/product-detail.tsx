@@ -1,18 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "wouter";
-import { MessageCircle, Share2, ArrowLeft } from "lucide-react";
+import { MessageCircle, Share2, ArrowLeft, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { generateProductEnquiryLink, openWhatsApp } from "@/lib/whatsapp";
 import { useToast } from "@/hooks/use-toast";
+import { YouTubePlayer } from "@/components/youtube-player";
+import { useLanguage } from "@/contexts/language-context";
 import ProductCard from "@/components/product-card";
 import type { Product } from "@shared/schema";
 
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const { data: product, isLoading } = useQuery<Product>({
     queryKey: ["/api/products", slug],
@@ -170,6 +173,35 @@ const ProductDetail = () => {
                 </div>
               )}
 
+              {/* Features */}
+              {product.features && product.features.length > 0 && (
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-3">{t('features')}</h3>
+                  <ul className="space-y-2">
+                    {product.features.map((feature, index) => (
+                      <li key={index} className="flex items-center text-gray-600">
+                        <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Specifications */}
+              {product.specifications && product.specifications.length > 0 && (
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-3">{t('specifications')}</h3>
+                  <div className="grid grid-cols-1 gap-2">
+                    {product.specifications.map((spec, index) => (
+                      <div key={index} className="flex items-center justify-between py-2 border-b border-gray-200 last:border-b-0">
+                        <span className="text-gray-600">{spec}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
@@ -191,21 +223,20 @@ const ProductDetail = () => {
                 </Button>
               </div>
 
-              {/* Product Features */}
-              <Card>
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">Product Features</h3>
-                  <ul className="space-y-2 text-gray-600">
-                    <li>• High-quality construction and materials</li>
-                    <li>• Designed for durability and efficiency</li>
-                    <li>• Professional-grade equipment</li>
-                    <li>• Comprehensive warranty coverage</li>
-                    <li>• Expert installation and support</li>
-                  </ul>
-                </CardContent>
-              </Card>
             </div>
           </div>
+
+          {/* YouTube Video Section */}
+          {product.youtubeUrl && (
+            <div className="mt-12">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-6">{t('productVideo')}</h3>
+              <YouTubePlayer 
+                url={product.youtubeUrl} 
+                title={`${product.name} Video`}
+                className="max-w-4xl mx-auto"
+              />
+            </div>
+          )}
         </div>
       </section>
 

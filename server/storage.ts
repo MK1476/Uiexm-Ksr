@@ -150,6 +150,9 @@ export class MemStorage implements IStorage {
       isFeatured: true,
       isActive: true,
       slug: "premium-tractor-xl-500",
+      youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      features: ["High-performance engine", "GPS navigation", "Air conditioning", "Hydraulic power steering"],
+      specifications: ["Engine: 85 HP", "Fuel Tank: 65 L", "Weight: 3200 kg", "Max Speed: 40 km/h"],
     });
 
     this.createProduct({
@@ -297,7 +300,7 @@ export class MemStorage implements IStorage {
 
   // Products
   async getProducts(): Promise<Product[]> {
-    return Array.from(this.products.values()).filter(prod => prod.isActive);
+    return Array.from(this.products.values());
   }
 
   async getProduct(id: number): Promise<Product | undefined> {
@@ -337,7 +340,10 @@ export class MemStorage implements IStorage {
       price: product.price ?? null,
       images: product.images ?? null,
       categoryId: product.categoryId ?? null,
-      isFeatured: product.isFeatured ?? false
+      isFeatured: product.isFeatured ?? false,
+      youtubeUrl: product.youtubeUrl ?? null,
+      features: product.features ?? null,
+      specifications: product.specifications ?? null,
     };
     this.products.set(id, newProduct);
     return newProduct;

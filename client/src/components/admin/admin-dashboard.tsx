@@ -1,19 +1,27 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Plus, Edit2, Trash2, LogOut, Save } from "lucide-react";
-import { logout } from "@/lib/auth";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { 
+  Plus, 
+  Edit2, 
+  Trash2, 
+  LogOut, 
+  Save,
+  Filter,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { ImageUpload } from "@/components/image-upload";
+import { ProductForm } from "./product-form";
+import { useLanguage } from "@/contexts/language-context";
 import type { CarouselImage, Category, Product } from "@shared/schema";
 
 interface AdminDashboardProps {
@@ -21,10 +29,14 @@ interface AdminDashboardProps {
 }
 
 const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
-  const [activeTab, setActiveTab] = useState("carousel");
+  const [activeTab, setActiveTab] = useState("products");
   const [editingItem, setEditingItem] = useState<any>(null);
   const [formData, setFormData] = useState<any>({});
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [showProductForm, setShowProductForm] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | undefined>(undefined);
   const { toast } = useToast();
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
 
   const { data: carouselImages = [] } = useQuery<CarouselImage[]>({
@@ -40,7 +52,6 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
   });
 
   const handleLogout = () => {
-    logout();
     onLogout();
   };
 
@@ -104,14 +115,56 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
   };
 
   const handleAdd = (type: string) => {
-    const defaultData = {
-      carousel: { title: "", imageUrl: "", linkUrl: "", order: 0, isActive: true },
-      category: { name: "", description: "", imageUrl: "", slug: "", isActive: true },
-      product: { name: "", description: "", price: "", imageUrl: "", slug: "", isFeatured: false, isActive: true },
-    };
-    
-    setEditingItem({ type });
-    setFormData(defaultData[type as keyof typeof defaultData]);
+    if (type === "product") {
+      setEditingProduct(undefined);
+      setShowProductForm(true);
+    } else {
+      const defaultData = {
+        carousel: { title: "", imageUrl: "", linkUrl: "", order: 0, isActive: true },
+        category: { name: "", description: "", imageUrl: "", slug: "", isActive: true },
+      };
+      
+      setEditingItem({ type });
+      setFormData(defaultData[type as keyof typeof defaultData]);
+    }
+  };
+
+  const handleProductEdit = (product: Product) => {
+    setEditingProduct(product);
+    setShowProductForm(true);
+  };
+
+  const handleProductSave = async (productData: any) => {
+    try {
+      if (editingProduct) {
+        await apiRequest("PUT", `/api/products/${editingProduct.id}`, productData);
+        toast({
+          title: "Success",
+          description: "Product updated successfully",
+        });
+      } else {
+        await apiRequest("POST", "/api/products", productData);
+        toast({
+          title: "Success", 
+          description: "Product created successfully",
+        });
+      }
+      
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+      setShowProductForm(false);
+      setEditingProduct(undefined);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save product",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleProductCancel = () => {
+    setShowProductForm(false);
+    setEditingProduct(undefined);
   };
 
   return (
@@ -149,11 +202,13 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
               {carouselImages.map((image) => (
                 <Card key={image.id}>
                   <CardContent className="p-4">
-                    <img
-                      src={image.imageUrl}
-                      alt={image.title}
-                      className="w-full h-32 object-cover rounded-md mb-3"
-                    />
+                    {image.imageUrl && (
+                      <img
+                        src={image.imageUrl}
+                        alt={image.title}
+                        className="w-full h-32 object-cover rounded-md mb-3"
+                      />
+                    )}
                     <h3 className="font-semibold mb-2">{image.title}</h3>
                     <div className="flex items-center justify-between">
                       <Badge variant={image.isActive ? "default" : "secondary"}>
@@ -232,240 +287,207 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
           </TabsContent>
 
           <TabsContent value="products" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold">Products</h2>
-              <Button onClick={() => handleAdd("product")}>
-                <Plus className="h-4 w-4 mr-2" />
-                Add New Product
-              </Button>
-            </div>
+            {showProductForm ? (
+              <ProductForm
+                product={editingProduct}
+                categories={categories}
+                onSave={handleProductSave}
+                onCancel={handleProductCancel}
+              />
+            ) : (
+              <>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold">Products</h2>
+                  <Button onClick={() => handleAdd("product")}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add New Product
+                  </Button>
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {products.map((product) => (
-                <Card key={product.id}>
-                  <CardContent className="p-4">
-                    {product.imageUrl && (
-                      <img
-                        src={product.imageUrl}
-                        alt={product.name}
-                        className="w-full h-32 object-cover rounded-md mb-3"
-                      />
-                    )}
-                    <h3 className="font-semibold mb-2">{product.name}</h3>
-                    <p className="text-sm text-gray-600 mb-2">{product.description}</p>
-                    {product.price && (
-                      <p className="text-lg font-bold text-primary mb-2">{product.price}</p>
-                    )}
-                    <div className="flex items-center justify-between">
-                      <div className="flex space-x-2">
-                        <Badge variant={product.isActive ? "default" : "secondary"}>
-                          {product.isActive ? "Active" : "Inactive"}
-                        </Badge>
-                        {product.isFeatured && (
-                          <Badge variant="outline">Featured</Badge>
-                        )}
-                      </div>
-                      <div className="flex space-x-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleEdit(product, "product")}
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDelete(product.id, "product")}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                {/* Category Filter */}
+                <div className="flex items-center gap-4 mb-6">
+                  <Label htmlFor="category-filter" className="flex items-center gap-2">
+                    <Filter className="h-4 w-4" />
+                    Filter by Category:
+                  </Label>
+                  <Select
+                    value={selectedCategory?.toString() || 'all'}
+                    onValueChange={(value) => setSelectedCategory(value === 'all' ? null : Number(value))}
+                  >
+                    <SelectTrigger className="w-64">
+                      <SelectValue placeholder="All Categories" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Categories</SelectItem>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id.toString()}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {products
+                    .filter(product => !selectedCategory || product.categoryId === selectedCategory)
+                    .map((product) => {
+                      const category = categories.find(cat => cat.id === product.categoryId);
+                      return (
+                        <Card key={product.id}>
+                          <CardContent className="p-4">
+                            {product.imageUrl && (
+                              <img
+                                src={product.imageUrl}
+                                alt={product.name}
+                                className="w-full h-32 object-cover rounded-md mb-3"
+                              />
+                            )}
+                            <h3 className="font-semibold mb-2">{product.name}</h3>
+                            <p className="text-sm text-gray-600 mb-2">{product.description}</p>
+                            {category && (
+                              <p className="text-xs text-blue-600 mb-2">{category.name}</p>
+                            )}
+                            {product.price && (
+                              <p className="text-lg font-bold text-primary mb-2">{product.price}</p>
+                            )}
+                            <div className="flex items-center justify-between">
+                              <div className="flex space-x-2">
+                                <Badge variant={product.isActive ? "default" : "secondary"}>
+                                  {product.isActive ? t('available') : t('unavailable')}
+                                </Badge>
+                                {product.isFeatured && (
+                                  <Badge variant="outline">{t('featured')}</Badge>
+                                )}
+                              </div>
+                              <div className="flex space-x-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleProductEdit(product)}
+                                >
+                                  <Edit2 className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleDelete(product.id, "product")}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                </div>
+              </>
+            )}
           </TabsContent>
         </Tabs>
 
         {/* Edit Form Modal */}
         {editingItem && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
-              <CardHeader>
-                <CardTitle>
-                  {editingItem.id ? "Edit" : "Add"} {editingItem.type}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle>
+                {editingItem.id ? "Edit" : "Add New"} {editingItem.type}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
                 {editingItem.type === "carousel" && (
                   <>
-                    <div className="space-y-2">
+                    <div>
                       <Label htmlFor="title">Title</Label>
                       <Input
                         id="title"
                         value={formData.title || ""}
-                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, title: e.target.value })}
+                        onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label>Image Upload</Label>
+                    <div>
+                      <Label>Image</Label>
                       <ImageUpload
+                        onImageUpload={(imageUrl) => setFormData(prev => ({ ...prev, imageUrl }))}
                         currentImage={formData.imageUrl}
-                        onImageUpload={(imageUrl) => setFormData({ ...formData, imageUrl })}
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div>
                       <Label htmlFor="linkUrl">Link URL</Label>
                       <Input
                         id="linkUrl"
                         value={formData.linkUrl || ""}
-                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, linkUrl: e.target.value })}
+                        onChange={(e) => setFormData(prev => ({ ...prev, linkUrl: e.target.value }))}
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div>
                       <Label htmlFor="order">Order</Label>
                       <Input
                         id="order"
                         type="number"
                         value={formData.order || 0}
-                        onChange={(e: { target: { value: string; }; }) => setFormData({ ...formData, order: parseInt(e.target.value) })}
+                        onChange={(e) => setFormData(prev => ({ ...prev, order: Number(e.target.value) }))}
                       />
                     </div>
                     <div className="flex items-center space-x-2">
                       <Switch
-                        id="isActive"
-                        checked={formData.isActive}
-                        onCheckedChange={(checked: any) => setFormData({ ...formData, isActive: checked })}
+                        id="active"
+                        checked={formData.isActive || false}
+                        onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
                       />
-                      <Label htmlFor="isActive">Active</Label>
+                      <Label htmlFor="active">Active</Label>
                     </div>
                   </>
                 )}
 
                 {editingItem.type === "category" && (
                   <>
-                    <div className="space-y-2">
+                    <div>
                       <Label htmlFor="name">Name</Label>
                       <Input
                         id="name"
                         value={formData.name || ""}
-                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, name: e.target.value })}
+                        onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div>
                       <Label htmlFor="description">Description</Label>
                       <Textarea
                         id="description"
                         value={formData.description || ""}
-                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, description: e.target.value })}
+                        onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label>Image Upload</Label>
-                      <ImageUpload
-                        currentImage={formData.imageUrl}
-                        onImageUpload={(imageUrl) => setFormData({ ...formData, imageUrl })}
-                      />
-                    </div>
-                    <div className="space-y-2">
+                    <div>
                       <Label htmlFor="slug">Slug</Label>
                       <Input
                         id="slug"
                         value={formData.slug || ""}
-                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, slug: e.target.value })}
+                        onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
                       />
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Switch
-                        id="isActive"
-                        checked={formData.isActive}
-                        onCheckedChange={(checked: any) => setFormData({ ...formData, isActive: checked })}
-                      />
-                      <Label htmlFor="isActive">Active</Label>
-                    </div>
-                  </>
-                )}
-
-                {editingItem.type === "product" && (
-                  <>
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Name</Label>
-                      <Input
-                        id="name"
-                        value={formData.name || ""}
-                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, name: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="description">Description</Label>
-                      <Textarea
-                        id="description"
-                        value={formData.description || ""}
-                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, description: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="price">Price</Label>
-                      <Input
-                        id="price"
-                        value={formData.price || ""}
-                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, price: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Image Upload</Label>
+                    <div>
+                      <Label>Image</Label>
                       <ImageUpload
+                        onImageUpload={(imageUrl) => setFormData(prev => ({ ...prev, imageUrl }))}
                         currentImage={formData.imageUrl}
-                        onImageUpload={(imageUrl) => setFormData({ ...formData, imageUrl })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="categoryId">Category</Label>
-                      <select
-                        id="categoryId"
-                        value={formData.categoryId || ""}
-                        onChange={(e) => setFormData({ ...formData, categoryId: parseInt(e.target.value) || null })}
-                        className="w-full p-2 border rounded-md"
-                      >
-                        <option value="">Select a category</option>
-                        {categories.map((category) => (
-                          <option key={category.id} value={category.id}>
-                            {category.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="slug">Slug</Label>
-                      <Input
-                        id="slug"
-                        value={formData.slug || ""}
-                        onChange={(e: { target: { value: any; }; }) => setFormData({ ...formData, slug: e.target.value })}
                       />
                     </div>
                     <div className="flex items-center space-x-2">
                       <Switch
-                        id="isFeatured"
-                        checked={formData.isFeatured}
-                        onCheckedChange={(checked: any) => setFormData({ ...formData, isFeatured: checked })}
+                        id="active"
+                        checked={formData.isActive || false}
+                        onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
                       />
-                      <Label htmlFor="isFeatured">Featured</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Switch
-                        id="isActive"
-                        checked={formData.isActive}
-                        onCheckedChange={(checked: any) => setFormData({ ...formData, isActive: checked })}
-                      />
-                      <Label htmlFor="isActive">Active</Label>
+                      <Label htmlFor="active">Active</Label>
                     </div>
                   </>
                 )}
 
-                <div className="flex space-x-2 pt-4">
-                  <Button onClick={handleSave} className="flex-1">
+                <div className="flex space-x-4 pt-4">
+                  <Button onClick={handleSave}>
                     <Save className="h-4 w-4 mr-2" />
                     Save
                   </Button>
@@ -479,9 +501,9 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                     Cancel
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>

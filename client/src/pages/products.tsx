@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ProductCard from "@/components/product-card";
+import { SearchBar } from "@/components/search-bar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
@@ -8,6 +10,7 @@ import type { Product, Category } from "@shared/schema";
 
 const Products = () => {
   const { t } = useLanguage();
+  const [searchQuery, setSearchQuery] = useState('');
   
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
@@ -17,8 +20,22 @@ const Products = () => {
     queryKey: ["/api/categories"],
   });
 
-  // Group products by category
-  const productsByCategory = products.reduce((acc, product) => {
+  // Filter products based on search query
+  const filteredProducts = products.filter(product => {
+    if (!searchQuery) return product.isActive !== false; // Only show available products
+    
+    const category = categories.find(cat => cat.id === product.categoryId);
+    const searchLower = searchQuery.toLowerCase();
+    
+    return (product.isActive !== false) && (
+      product.name.toLowerCase().includes(searchLower) ||
+      product.description?.toLowerCase().includes(searchLower) ||
+      category?.name.toLowerCase().includes(searchLower)
+    );
+  });
+
+  // Group filtered products by category
+  const productsByCategory = filteredProducts.reduce((acc, product) => {
     const categoryId = product.categoryId || 0;
     if (!acc[categoryId]) {
       acc[categoryId] = [];
@@ -58,9 +75,15 @@ const Products = () => {
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
               {t("ourProducts")}
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-gray-600 mb-6">
               {t("productsSubtitle")}
             </p>
+            <div className="max-w-md mx-auto">
+              <SearchBar 
+                onSearch={setSearchQuery}
+                placeholder={t('searchByName')}
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -68,9 +91,11 @@ const Products = () => {
       {/* Products by Category */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          {products.length === 0 ? (
+          {filteredProducts.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-600">{t("noProductsAvailable")}</p>
+              <p className="text-gray-600">
+                {searchQuery ? t("noProductsFound") : t("noProductsAvailable")}
+              </p>
             </div>
           ) : (
             <div className="space-y-16">
