@@ -27,7 +27,6 @@ export const translations = {
     invalidFileType: "Invalid File Type",
     fileTooLarge: "File Too Large",
     noProductsAvailable: "No products available at the moment.",
-    viewAll: "View All",
     
     // Home Page
     heroTitle: "Premium Agricultural Equipment",
@@ -100,7 +99,6 @@ export const translations = {
     
     // Messages
     success: "Success",
-    error: "Error",
     loading: "Loading...",
     uploading: "Uploading...",
     changeImage: "Change Image",
