@@ -64,13 +64,13 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
     if (!editingItem) return;
 
     try {
-      const { type, id, ...data } = formData;
+      const { type, ...data } = formData;
       const endpoint = type === "carousel" ? "/api/carousel" : 
                      type === "category" ? "/api/categories" : 
                      "/api/products";
       
-      if (id) {
-        await apiRequest("PUT", `${endpoint}/${id}`, data);
+      if (editingItem.id) {
+        await apiRequest("PUT", `${endpoint}/${editingItem.id}`, data);
       } else {
         await apiRequest("POST", endpoint, data);
       }
@@ -80,9 +80,10 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
       setFormData({});
       toast({
         title: "Success",
-        description: `${type} ${id ? "updated" : "created"} successfully`,
+        description: `${type} ${editingItem.id ? "updated" : "created"} successfully`,
       });
     } catch (error) {
+      console.error("Save error:", error);
       toast({
         title: "Error",
         description: "Failed to save item",
@@ -353,11 +354,8 @@ const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                             )}
                             <div className="flex items-center justify-between">
                               <div className="flex space-x-2">
-                                <Badge variant={product.isActive ? "default" : "secondary"}>
-                                  {product.isActive ? t('available') : t('unavailable')}
-                                </Badge>
-                                {product.isFeatured && (
-                                  <Badge variant="outline">{t('featured')}</Badge>
+                                {!product.isActive && (
+                                  <Badge variant="destructive">{t('unavailable')}</Badge>
                                 )}
                               </div>
                               <div className="flex space-x-2">

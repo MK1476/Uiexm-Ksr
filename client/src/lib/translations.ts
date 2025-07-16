@@ -105,7 +105,6 @@ export const translations = {
     cancel: "Cancel",
     active: "Active",
     inactive: "Inactive",
-    featured: "Featured",
     
     // Form Labels
     name: "Name",

@@ -55,7 +55,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   return (
-    <Card className="card-hover group premium-card premium-shadow">
+    <Card className={`card-hover group premium-card premium-shadow ${!product.isActive ? 'opacity-60 grayscale' : ''}`}>
       <Link href={`/product/${product.slug}`}>
         <div className="aspect-[4/3] overflow-hidden rounded-t-lg relative">
           <img
@@ -63,9 +63,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
-          {product.isActive === false && (
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-              <Badge variant="destructive" className="text-white font-semibold">
+          {!product.isActive && (
+            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+              <Badge variant="destructive" className="text-white font-semibold text-lg px-4 py-2">
                 {t('unavailable')}
               </Badge>
             </div>
@@ -80,14 +80,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </h3>
         </Link>
         
-        <div className="flex items-center gap-2 mb-2">
-          <Badge variant={product.isActive !== false ? "secondary" : "destructive"}>
-            {product.isActive !== false ? t('available') : t('unavailable')}
-          </Badge>
-          {product.isFeatured && (
-            <Badge variant="default">{t('featured')}</Badge>
-          )}
-        </div>
+        {!product.isActive && (
+          <div className="flex items-center gap-2 mb-2">
+            <Badge variant="destructive">
+              {t('unavailable')}
+            </Badge>
+          </div>
+        )}
         
         {product.description && (
           <p className="text-gray-600 mb-4 line-clamp-2 text-sm leading-relaxed">
@@ -106,7 +105,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="flex gap-3 w-full">
           <Button
             onClick={handleWhatsAppEnquiry}
-            className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-300"
+            disabled={!product.isActive}
+            className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <MessageCircle className="h-4 w-4 mr-2" />
             {t("enquireNow")}
